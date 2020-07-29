@@ -6,25 +6,25 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Menu from '@material-ui/core/Menu';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import ColorLensIcon from '@material-ui/icons/ColorLens';
-import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import Container from '@material-ui/core/Container';
 import './App.css';
 
 const useStyle = makeStyles ((theme) => ({
   box1: {
-    marginLeft: theme.spacing(10),
+    marginLeft: theme.spacing(5),
     height: "75%",
+  },
+  box2: {
+    margin: theme.spacing(2),
+    height: "15%",
+    padding: theme.spacing(2),
   },
   buttons: {
     margin: 5,
@@ -46,7 +46,8 @@ const App = () => {
   
   const [open, setOpen] = React.useState(false);
   const [post, setPost] = React.useState("");
-  const [posted, setPosted] = React.useState("");
+  const [posted, setPosted] = React.useState("Hello world!");
+  const [user, setUser] = React.useState("Santiago posted:");
 
   useEffect(() => {
 
@@ -71,7 +72,19 @@ const App = () => {
     console.log(post);
   };
 
+  const styledClasses = useStyle();
 
+  const DisplayPost = ({user,content}) => {
+    return(
+      <Box className={styledClasses.box1}>
+        <Typography variant="h6" align="left" gutterBottom>{user}</Typography>
+        <Box className={styledClasses.box2} border={1}>
+          <Typography variant="body1" align="justify" gutterBottom>{content}</Typography>
+        </Box>
+      </Box> 
+    );
+
+  }
 
   return (
     <div className="App">
@@ -85,7 +98,7 @@ const App = () => {
         
         </Toolbar>
       </AppBar>
-      <Dialog open={open} TransitionComponent={Transition} fullWidth="true"
+      <Dialog open={open} TransitionComponent={Transition} fullWidth
         keepMounted onClose={handleDialogClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Write a new post!</DialogTitle>
           <DialogContent>
@@ -112,12 +125,13 @@ const App = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        <Box width={1/2} padding={5} 
-        paddingBottom={10}  
-        className={ useStyle.box1 }>
-          <Typography>{posted}</Typography>
+        <Container maxWidth="sm">
+          <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }}>
+            <DisplayPost user={user} content={posted}/>
+          </Typography>
           
-        </Box>
+        </Container>
+        
 
 
     </div>
