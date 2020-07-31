@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cors = require('cors');
 const path = require('path');
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -27,10 +29,12 @@ mongoose.connection.on('connected', () => {
 // });
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: false}));
 
+
+app.use(cors());
 app.use('/', routes);
-app.use = morgan('tiny');
+
 
 
 

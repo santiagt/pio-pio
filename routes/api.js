@@ -12,11 +12,11 @@ router.get("/api", (req, res) => {
 });
 
 router.post("/save", (req, res) => {
-    console.log("body: ", req.body);
+    
     const data = req.body;
     const newPost = new PioPost(data);
-    newPost.save((error) => {
-        if (error) {
+    newPost.save((err) => {
+        if (err) {
             res.status(500).json({
                 msg: "Sorry, internal server error"
             });

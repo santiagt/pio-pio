@@ -17,14 +17,15 @@ import Container from '@material-ui/core/Container';
 import axios from 'axios';
 import './App.css';
 
+
 const useStyle = makeStyles ((theme) => ({
   box1: {
     marginLeft: theme.spacing(5),
-    height: "75%",
+    height: "35%",
   },
   box2: {
     margin: theme.spacing(2),
-    height: "15%",
+    height: "40%",
     padding: theme.spacing(2),
   },
   buttons: {
@@ -47,34 +48,51 @@ const App = () => {
   
   const [open, setOpen] = React.useState(false);
   const [post, setPost] = React.useState("");
-  const [posted, setPosted] = React.useState("Hello world!");
-  const [user, setUser] = React.useState("Santiago posted:");
-  const [id, setId] = React.useState("1");
+  const [allPost, setAllPost] = React.useState([]);
+
+
 
   useEffect(() => {
-
+    getPost();
   }, []);
 
   const postPost = () => {
     const payLoad = {
       user: "Santiago",
-      content: "hello you"
+      content: post,
+      date: Date.now()
     };
 
     axios({
-      url: "/api/save",
+      url: "http://localhost:8080/api/save",
       method: "POST",
       data: payLoad
-    }).then(() => {
-      console.log("Data was send to the server");
-    }).catch(() => {
+    }).then((res) => {
+      console.log(res + " was send to the server");
+      setPost("");
+      getPost();
+    }).catch((error) => {
       console.log("Internal server error");
     })
 
 
     console.log(post);
     setOpen(false);
+    
   };
+
+  const getPost = () => {
+
+    axios.get('http://localhost:8080/api')
+    .then((response) => {
+      const data = response.data;
+      setAllPost(data);
+      console.log("Data has been recieved");
+    })
+    .catch(() => {
+      console.log("something went wrong!");
+    })
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,24 +104,30 @@ const App = () => {
 
   const handleChangePost = (event) => {
     setPost(event.target.value);
-    console.log(post);
   };
 
   const styledClasses = useStyle();
 
-  const DisplayPost = ({user,content}) => {
-    return(
-      <Box className={styledClasses.box1}>
-        <Typography variant="h6" align="left" gutterBottom>{user}</Typography>
+  const DisplayPosts = () => {
+    const toPage = allPost.reverse().map((pos, index) => {
+      return (
+        <Box className={styledClasses.box1} key={index}>
+        <Typography variant="h6" align="left" gutterBottom>{pos.user + " says:"}</Typography>
         <Box className={styledClasses.box2} border={1} 
           style={{ background: "#d9d9d9", 
                    borderRadius: "10px",
                    boxShadow: "0px 5px 10px rgb(70, 70, 70)" }}>
-          <Typography variant="body1" align="justify" gutterBottom>{content}</Typography>
+          <Typography variant="body1" align="justify" gutterBottom>{pos.content}</Typography>
         </Box>
       </Box> 
-    );
+      );
+
+    });
+    return toPage;    
+      
+    
   }
+  
 
   return (
     <div className="App">
@@ -129,7 +153,6 @@ const App = () => {
               margin="dense"
               onChange={handleChangePost}
               rows={7}
-              defaultValue="What would you like to say?"
               variant="filled"
               fullWidth
               inputProps={{ maxLength: 490 }}
@@ -146,8 +169,8 @@ const App = () => {
           </DialogActions>
         </Dialog>
         <Container maxWidth="sm">
-          <Typography component="div" style={{ backgroundColor: '#808080', height: '100vh' }}>
-            <DisplayPost key={id} user={user} content={posted}/>
+          <Typography component="div" style={{ backgroundColor: '#808080', height: '100%' }}>
+              <DisplayPosts />
           </Typography>
           
         </Container>
