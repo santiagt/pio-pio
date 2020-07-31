@@ -14,6 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Container from '@material-ui/core/Container';
+import axios from 'axios';
 import './App.css';
 
 const useStyle = makeStyles ((theme) => ({
@@ -55,7 +56,22 @@ const App = () => {
   }, []);
 
   const postPost = () => {
-    setPosted(post);
+    const payLoad = {
+      user: "Santiago",
+      content: "hello you"
+    };
+
+    axios({
+      url: "/api/save",
+      method: "POST",
+      data: payLoad
+    }).then(() => {
+      console.log("Data was send to the server");
+    }).catch(() => {
+      console.log("Internal server error");
+    })
+
+
     console.log(post);
     setOpen(false);
   };
